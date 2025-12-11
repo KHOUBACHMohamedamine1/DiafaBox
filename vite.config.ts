@@ -8,9 +8,8 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
 
     return {
-      // 2. Add the critical 'base' path for GitHub Pages deployment
-      // This ensures assets load correctly from the /DiafaBox/ subdirectory.
-      base: "/DiafaBox/", 
+      // 2. CRITICAL FIX: Use relative path (./) for deployment
+      base: "./", 
       
       server: {
         port: 3000,
@@ -20,7 +19,6 @@ export default defineConfig(({ mode }) => {
       
       // 3. Keep environment variable definitions
       define: {
-        // You might only need one of these, but keep both if your code uses both keys
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
       },
