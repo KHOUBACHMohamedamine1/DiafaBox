@@ -5,6 +5,12 @@ on:
     branches: ["main"] # Trigger deployment when code is pushed to the 'main' branch
   workflow_dispatch:
 
+# CRITICAL: This block grants the necessary permissions for secure deployment (OIDC).
+permissions:
+  contents: read # Allows checking out the code
+  pages: write # Allows the action to deploy to GitHub Pages
+  id-token: write # Allows creation of the OIDC token to authenticate deploy
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Build project
-        run: npm run build # This executes the "vite build" command
+        run: npm run build # Executes "vite build" and generates the 'dist' folder
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -29,8 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # This specifies the directory containing the final static files.
-          # For a Vite project, this is always 'dist'.
+          # Specifies the directory containing the final static files.
           path: './dist' 
 
       - name: Deploy to GitHub Pages
