@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Star, Package, Send, Gift, Play, Wand2, X, Plus, Minus, Phone, Mail, Instagram, MapPin, CheckCircle, TrendingUp, Heart, Award, ArrowRight, Menu, Trash2, Facebook } from 'lucide-react';
+import { ShoppingBag, Star, Package, Send, Gift, Play, X, Plus, Minus, Phone, Mail, Instagram, MapPin, CheckCircle, TrendingUp, Heart, Award, ArrowRight, Menu, Trash2, Facebook } from 'lucide-react';
 import { PRODUCTS, PACKS } from './constants';
 import { Product, CartItem, Category } from './types';
-import { generateProductImage } from './services/geminiService';
 
 // --- Helper Components ---
 
@@ -118,7 +117,7 @@ const Toast: React.FC<{ message: string; onClose: () => void }> = ({ message, on
   );
 };
 
-// --- Product Card with AI Generation ---
+// --- Product Card ---
 
 const ProductCard: React.FC<{ 
   product: Product; 
@@ -126,29 +125,13 @@ const ProductCard: React.FC<{
   count: number;
   onRemove: (p: Product) => void;
 }> = ({ product, onAdd, count, onRemove }) => {
-  const [image, setImage] = useState(product.imageUrl);
-  const [loading, setLoading] = useState(false);
-
-  const handleGenerateImage = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!process.env.API_KEY) {
-      alert("API Key required for image generation.");
-      return;
-    }
-    setLoading(true);
-    const generated = await generateProductImage(product.name + " " + product.description);
-    if (generated) {
-      setImage(generated);
-    }
-    setLoading(false);
-  };
-
+  
   return (
     <div className="group flex flex-col h-full bg-transparent">
       {/* Aspect ratio 4:5 (Portrait) */}
       <div className="relative aspect-[4/5] overflow-hidden bg-sand-100 mb-4 md:mb-6 cursor-pointer rounded-sm">
         <img 
-          src={image} 
+          src={product.imageUrl} 
           alt={product.name} 
           className="w-full h-full object-cover transform md:group-hover:scale-105 transition-transform duration-[1s] ease-out"
           onError={(e) => {
@@ -179,18 +162,6 @@ const ProductCard: React.FC<{
                 </button>
              </div>
           )}
-        </div>
-
-        {/* AI Wand - Hidden on mobile, visible hover desktop */}
-        <div className="absolute top-3 right-3 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 z-10 hidden md:block">
-            <button 
-              onClick={handleGenerateImage}
-              disabled={loading}
-              title="Générer une variante IA"
-              className="bg-white/80 backdrop-blur p-2 rounded-full text-emerald-900 hover:text-gold-600 shadow-sm transition-colors"
-            >
-              <Wand2 size={14} className={loading ? "animate-spin" : ""} />
-            </button>
         </div>
         
         {/* Count Badge */}
@@ -280,7 +251,7 @@ const CartDrawer: React.FC<{
                     <div>
                       <div className="flex justify-between items-start gap-2">
                         <h4 className="font-serif text-lg md:text-xl text-emerald-950 leading-none line-clamp-2">{item.name}</h4>
-                        <button onClick={() => onRemove({...item, quantity: item.quantity})} className="text-gray-300 hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 p-1">
+                        <button onClick={() => onRemove(item)} className="text-gray-300 hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100 p-1">
                            <Trash2 size={14} />
                         </button>
                       </div>
