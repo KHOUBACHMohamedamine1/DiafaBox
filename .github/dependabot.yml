@@ -1,0 +1,24 @@
+# .github/dependabot.yml
+
+version: 2
+updates:
+  # Configuration for npm/Node.js dependencies
+  - package-ecosystem: "npm"
+    # The package manifests (package.json, package-lock.json) are in the root directory.
+    directory: "/"
+    schedule:
+      # Check for updates every week. Other options: "daily", "monthly".
+      interval: "weekly"
+    # Optional: Groups multiple related updates into a single pull request.
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+  # Configuration for GitHub Actions
+  # This is a good practice if you use CI/CD workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
